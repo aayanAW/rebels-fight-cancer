@@ -192,6 +192,47 @@
         outline-offset: -1px;
       }
 
+      .slide {
+        opacity: 0;
+        transition: opacity 700ms var(--ease-out);
+      }
+      .slide.is-active {
+        opacity: 1;
+      }
+      [data-slide-controls][hidden] {
+        display: none;
+      }
+      .slide-btn {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        color: #3d3934;
+        transition: background-color 150ms var(--ease-out);
+      }
+      .slide-btn:hover {
+        background: rgba(26, 23, 20, 0.06);
+      }
+      .slide-btn:focus-visible {
+        outline: 2px solid #1a1714;
+        outline-offset: 2px;
+      }
+      .slide-dot::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #8a857d;
+        transition:
+          background-color 150ms var(--ease-out),
+          transform 150ms var(--ease-out);
+      }
+      .slide-dot[aria-current="true"]::before {
+        background: #1a1714;
+        transform: scale(1.35);
+      }
+
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -328,21 +369,126 @@
               </a>
             </div>
           </div>
-          <figure class="lg:col-span-6">
-            <div class="overflow-hidden rounded-xl">
+          <figure
+            class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-[1fr_auto] sm:gap-x-4"
+            data-slideshow
+            aria-roledescription="carousel"
+            aria-label="Photos from our events"
+          >
+            <div
+              class="relative overflow-hidden rounded-xl aspect-[4/3] bg-paper-tint sm:col-span-2"
+            >
               <img
                 src="brand_assets/instagram/cardmaking-dec4.jpg"
                 alt="Students at a classroom cardmaking event holding handmade cards for hospitalized kids"
                 width="1080"
                 height="1080"
                 fetchpriority="high"
-                class="media block w-full aspect-[4/3] object-cover object-[50%_55%]"
+                data-caption="Making cards for hospitalized kids at Great Neck South, December 2025."
+                class="slide media absolute inset-0 h-full w-full object-cover object-[50%_55%] is-active"
+              />
+              <img
+                src="brand_assets/instagram/sunrise-association.jpg"
+                alt="Rebels Fight Cancer members with Sunrise Association speakers at the GNS library"
+                width="1080"
+                height="810"
+                fetchpriority="low"
+                aria-hidden="true"
+                data-caption="Hosting the Sunrise Association at the GNS Library, December 2025."
+                class="slide media absolute inset-0 h-full w-full object-cover"
+              />
+              <img
+                src="brand_assets/instagram/chipotle-fundraiser.jpg"
+                alt="Three Rebels Fight Cancer members holding 'Do Good With Chipotle' fundraiser flyers outside the Chipotle at Gardens"
+                width="1080"
+                height="810"
+                fetchpriority="low"
+                aria-hidden="true"
+                data-caption="Handing out flyers for our Chipotle fundraiser in Great Neck, November 2025."
+                class="slide media absolute inset-0 h-full w-full object-cover"
+              />
+              <img
+                src="brand_assets/instagram/candy-cane-fundraiser.jpg"
+                alt="Students gathered around a holiday table of candy canes with a Candy Grams poster"
+                width="1080"
+                height="810"
+                fetchpriority="low"
+                aria-hidden="true"
+                data-caption="Our holiday candy table at Great Neck South, December 2025."
+                class="slide media absolute inset-0 h-full w-full object-cover"
               />
             </div>
-            <figcaption class="mt-3 text-[13px] text-ink-mute">
+            <figcaption
+              class="mt-3 text-[13px] text-ink-mute [text-wrap:pretty]"
+              data-slide-caption
+              aria-live="off"
+            >
               Making cards for hospitalized kids at Great Neck South, December
               2025.
             </figcaption>
+            <div
+              class="mt-1 sm:mt-1.5 flex items-center gap-1 self-start -ml-1.5 sm:ml-0 sm:-mr-1.5"
+              data-slide-controls
+              hidden
+            >
+              <button
+                type="button"
+                class="slide-btn slide-dot"
+                data-slide-to="0"
+                aria-label="Show photo 1 of 4"
+                aria-current="true"
+              ></button>
+              <button
+                type="button"
+                class="slide-btn slide-dot"
+                data-slide-to="1"
+                aria-label="Show photo 2 of 4"
+                aria-current="false"
+              ></button>
+              <button
+                type="button"
+                class="slide-btn slide-dot"
+                data-slide-to="2"
+                aria-label="Show photo 3 of 4"
+                aria-current="false"
+              ></button>
+              <button
+                type="button"
+                class="slide-btn slide-dot"
+                data-slide-to="3"
+                aria-label="Show photo 4 of 4"
+                aria-current="false"
+              ></button>
+              <button
+                type="button"
+                class="slide-btn"
+                data-slide-toggle
+                aria-label="Pause slideshow"
+              >
+                <svg
+                  data-icon="pause"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <rect x="6" y="5" width="4" height="14" rx="1" />
+                  <rect x="14" y="5" width="4" height="14" rx="1" />
+                </svg>
+                <svg
+                  data-icon="play"
+                  hidden
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M8 5.5v13a1 1 0 0 0 1.52.85l10.4-6.5a1 1 0 0 0 0-1.7L9.52 4.65A1 1 0 0 0 8 5.5z"
+                  />
+                </svg>
+              </button>
+            </div>
           </figure>
         </div>
       </section>
@@ -463,17 +609,30 @@
             </article>
 
             <article class="card overflow-hidden">
-              <div
-                class="aspect-[4/5] bg-ink/[0.04] grid place-items-center text-[14px] text-ink-mute"
-              >
-                Photo coming soon
-              </div>
+              <img
+                src="brand_assets/board/olivia.jpg"
+                alt="Portrait of Olivia, Co-Founder, Co-President, and Social Media Operations lead of Rebels Fight Cancer"
+                width="840"
+                height="1493"
+                loading="lazy"
+                class="media block w-full aspect-[4/5] object-cover object-[50%_30%]"
+              />
               <div class="p-6">
                 <h3 class="text-[20px] font-bold tracking-[-0.01em]">
                   Co-Founder, Co-President &amp; Social Media Operations
                 </h3>
-                <p class="mt-1 text-[14px] font-medium text-ink-mute">
-                  Name coming soon
+                <p class="mt-1 text-[14px] font-medium text-ink-mute">Olivia</p>
+                <p class="mt-3 text-[15px] leading-[1.65] text-ink-soft">
+                  Olivia is a passionate rising senior at Great Neck South High
+                  School with experience when it comes to business, content
+                  writing, and community engagement. She first got involved with
+                  Rebels Fight Cancer because she wanted to help others around
+                  her, but eventually that love grew into a passion for
+                  empowering others to make a difference in their communities.
+                  Through Rebels Fight Cancer, Olivia has discovered how
+                  powerful it can be to bring people together around a cause
+                  that matters, and she hopes to continue using her creativity,
+                  leadership, and voice to create meaningful change.
                 </p>
               </div>
             </article>
@@ -807,7 +966,7 @@
       <section id="blog" class="py-20 lg:py-28 bg-paper-tint">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
           <div
-            class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
+            class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12"
           >
             <h2
               class="text-[32px] lg:text-[40px] leading-[1.1] font-bold tracking-[-0.02em]"
@@ -820,180 +979,168 @@
             </p>
           </div>
 
-          <ul class="border-t border-ink/15">
-            <li class="border-b border-ink/15">
-              <a
-                href="blog/why-pediatric-cancer-research-is-underfunded.html"
-                class="card-link grid md:grid-cols-12 gap-2 md:gap-8 py-7"
+          <!-- Featured post, laid out like the hero -->
+          <a
+            href="blog/what-500-cards-actually-do.html"
+            class="card-link grid lg:grid-cols-12 gap-8 lg:gap-14 items-center"
+          >
+            <div class="lg:col-span-6">
+              <p class="text-[14px] font-semibold text-ink-mute">
+                Field note · 3 min read
+              </p>
+              <h3
+                class="card-title mt-3 text-[34px] sm:text-[44px] lg:text-[52px] leading-[1.03] font-extrabold tracking-[-0.025em]"
               >
-                <p class="md:col-span-3 text-[14px] font-medium text-ink-mute">
+                What 500 cards actually do
+              </h3>
+              <p class="mt-5 max-w-xl text-[18px] leading-[1.65] text-ink-soft">
+                We made more than 500 cards in two days. Here's what a card can
+                and can't do for a kid in a hospital bed, and why we keep
+                running these drives.
+              </p>
+              <span
+                class="btn-primary mt-8 inline-flex items-center rounded-lg px-5 py-3 text-[15px] font-semibold"
+                >Read post</span
+              >
+            </div>
+            <div class="lg:col-span-6 overflow-hidden rounded-xl">
+              <img
+                src="brand_assets/instagram/cardmaking-dec2.jpg"
+                alt=""
+                width="1080"
+                height="1080"
+                loading="lazy"
+                class="card-img media block w-full aspect-[4/3] object-cover object-[50%_60%]"
+              />
+            </div>
+          </a>
+
+          <div class="mt-14 grid md:grid-cols-2 gap-6">
+            <a
+              href="blog/why-pediatric-cancer-research-is-underfunded.html"
+              class="card-link"
+            >
+              <article class="card h-full p-7 lg:p-8 flex flex-col">
+                <p class="text-[14px] font-semibold text-ink-mute">
                   Explainer · 4 min read
                 </p>
-                <div class="md:col-span-8">
-                  <h3
-                    class="card-title text-[22px] leading-[1.25] font-bold tracking-[-0.01em]"
-                  >
-                    Why pediatric cancer research is underfunded
-                  </h3>
-                  <p
-                    class="mt-2 max-w-2xl text-[16px] leading-[1.65] text-ink-soft"
-                  >
-                    Less than 4% of federal cancer research funding goes to
-                    childhood cancer. Most of that gap comes from how grant
-                    money gets prioritized.
-                  </p>
-                </div>
-                <span class="hidden md:flex md:col-span-1 justify-end pt-1"
-                  ><svg
-                    class="h-5 w-5 card-arrow"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14M13 6l6 6-6 6" /></svg
-                ></span>
-              </a>
-            </li>
-            <li class="border-b border-ink/15">
-              <a
-                href="blog/what-500-cards-actually-do.html"
-                class="card-link grid md:grid-cols-12 gap-2 md:gap-8 py-7"
-              >
-                <p class="md:col-span-3 text-[14px] font-medium text-ink-mute">
-                  Field note · 3 min read
+                <h3
+                  class="card-title mt-3 text-[24px] lg:text-[28px] leading-[1.12] font-extrabold tracking-[-0.02em]"
+                >
+                  Why pediatric cancer research is underfunded
+                </h3>
+                <p class="mt-3 text-[16px] leading-[1.65] text-ink-soft">
+                  Less than 4% of federal cancer research funding goes to
+                  childhood cancer. Most of that gap comes from how grant money
+                  gets prioritized.
                 </p>
-                <div class="md:col-span-8">
-                  <h3
-                    class="card-title text-[22px] leading-[1.25] font-bold tracking-[-0.01em]"
-                  >
-                    What 500 cards actually do
-                  </h3>
-                  <p
-                    class="mt-2 max-w-2xl text-[16px] leading-[1.65] text-ink-soft"
-                  >
-                    We made more than 500 cards in two days. Here's what a card
-                    can and can't do for a kid in a hospital bed.
-                  </p>
-                </div>
-                <span class="hidden md:flex md:col-span-1 justify-end pt-1"
-                  ><svg
-                    class="h-5 w-5 card-arrow"
+                <span
+                  class="mt-auto pt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold"
+                  >Read post
+                  <svg
+                    class="h-4 w-4 card-arrow"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="2.2"
                     aria-hidden="true"
                   >
                     <path d="M5 12h14M13 6l6 6-6 6" /></svg
                 ></span>
-              </a>
-            </li>
-            <li class="border-b border-ink/15">
-              <a
-                href="blog/how-an-npcf-dollar-travels.html"
-                class="card-link grid md:grid-cols-12 gap-2 md:gap-8 py-7"
-              >
-                <p class="md:col-span-3 text-[14px] font-medium text-ink-mute">
+              </article>
+            </a>
+            <a href="blog/how-an-npcf-dollar-travels.html" class="card-link">
+              <article class="card h-full p-7 lg:p-8 flex flex-col">
+                <p class="text-[14px] font-semibold text-ink-mute">
                   Explainer · 5 min read
                 </p>
-                <div class="md:col-span-8">
-                  <h3
-                    class="card-title text-[22px] leading-[1.25] font-bold tracking-[-0.01em]"
-                  >
-                    How an NPCF dollar travels
-                  </h3>
-                  <p
-                    class="mt-2 max-w-2xl text-[16px] leading-[1.65] text-ink-soft"
-                  >
-                    Where does a $2 candygram end up? We traced it from our
-                    cashbox to a pediatric clinical trial.
-                  </p>
-                </div>
-                <span class="hidden md:flex md:col-span-1 justify-end pt-1"
-                  ><svg
-                    class="h-5 w-5 card-arrow"
+                <h3
+                  class="card-title mt-3 text-[24px] lg:text-[28px] leading-[1.12] font-extrabold tracking-[-0.02em]"
+                >
+                  How an NPCF dollar travels
+                </h3>
+                <p class="mt-3 text-[16px] leading-[1.65] text-ink-soft">
+                  Where does a $2 candygram end up? We traced it from our
+                  cashbox to a pediatric clinical trial.
+                </p>
+                <span
+                  class="mt-auto pt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold"
+                  >Read post
+                  <svg
+                    class="h-4 w-4 card-arrow"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="2.2"
                     aria-hidden="true"
                   >
                     <path d="M5 12h14M13 6l6 6-6 6" /></svg
                 ></span>
-              </a>
-            </li>
-            <li class="border-b border-ink/15">
-              <a
-                href="blog/pediatric-cancer-is-not-rare.html"
-                class="card-link grid md:grid-cols-12 gap-2 md:gap-8 py-7"
-              >
-                <p class="md:col-span-3 text-[14px] font-medium text-ink-mute">
+              </article>
+            </a>
+            <a href="blog/pediatric-cancer-is-not-rare.html" class="card-link">
+              <article class="card h-full p-7 lg:p-8 flex flex-col">
+                <p class="text-[14px] font-semibold text-ink-mute">
                   Explainer · 4 min read
                 </p>
-                <div class="md:col-span-8">
-                  <h3
-                    class="card-title text-[22px] leading-[1.25] font-bold tracking-[-0.01em]"
-                  >
-                    Pediatric cancer is not rare
-                  </h3>
-                  <p
-                    class="mt-2 max-w-2xl text-[16px] leading-[1.65] text-ink-soft"
-                  >
-                    About 10,500 American kids are diagnosed with cancer every
-                    year. Calling that rare affects how the disease gets funded.
-                  </p>
-                </div>
-                <span class="hidden md:flex md:col-span-1 justify-end pt-1"
-                  ><svg
-                    class="h-5 w-5 card-arrow"
+                <h3
+                  class="card-title mt-3 text-[24px] lg:text-[28px] leading-[1.12] font-extrabold tracking-[-0.02em]"
+                >
+                  Pediatric cancer is not rare
+                </h3>
+                <p class="mt-3 text-[16px] leading-[1.65] text-ink-soft">
+                  About 10,500 American kids are diagnosed with cancer every
+                  year. Calling that rare affects how the disease gets funded.
+                </p>
+                <span
+                  class="mt-auto pt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold"
+                  >Read post
+                  <svg
+                    class="h-4 w-4 card-arrow"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="2.2"
                     aria-hidden="true"
                   >
                     <path d="M5 12h14M13 6l6 6-6 6" /></svg
                 ></span>
-              </a>
-            </li>
-            <li class="border-b border-ink/15">
-              <a
-                href="blog/how-to-start-a-chapter-at-your-school.html"
-                class="card-link grid md:grid-cols-12 gap-2 md:gap-8 py-7"
-              >
-                <p class="md:col-span-3 text-[14px] font-medium text-ink-mute">
+              </article>
+            </a>
+            <a
+              href="blog/how-to-start-a-chapter-at-your-school.html"
+              class="card-link"
+            >
+              <article class="card h-full p-7 lg:p-8 flex flex-col">
+                <p class="text-[14px] font-semibold text-ink-mute">
                   Playbook · 5 min read
                 </p>
-                <div class="md:col-span-8">
-                  <h3
-                    class="card-title text-[22px] leading-[1.25] font-bold tracking-[-0.01em]"
-                  >
-                    How to start a chapter at your school
-                  </h3>
-                  <p
-                    class="mt-2 max-w-2xl text-[16px] leading-[1.65] text-ink-soft"
-                  >
-                    What we did to start our chapter, in order: finding an
-                    advisor, picking a board, running a first event, and
-                    connecting with NPCF.
-                  </p>
-                </div>
-                <span class="hidden md:flex md:col-span-1 justify-end pt-1"
-                  ><svg
-                    class="h-5 w-5 card-arrow"
+                <h3
+                  class="card-title mt-3 text-[24px] lg:text-[28px] leading-[1.12] font-extrabold tracking-[-0.02em]"
+                >
+                  How to start a chapter at your school
+                </h3>
+                <p class="mt-3 text-[16px] leading-[1.65] text-ink-soft">
+                  What we did to start our chapter, in order: finding an
+                  advisor, picking a board, running a first event, and
+                  connecting with NPCF.
+                </p>
+                <span
+                  class="mt-auto pt-6 inline-flex items-center gap-1.5 text-[15px] font-semibold"
+                  >Read post
+                  <svg
+                    class="h-4 w-4 card-arrow"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="2.2"
                     aria-hidden="true"
                   >
                     <path d="M5 12h14M13 6l6 6-6 6" /></svg
                 ></span>
-              </a>
-            </li>
-          </ul>
+              </article>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -1250,6 +1397,118 @@
 
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script>
+      // Hero slideshow: crossfades event photos every 5s. Pauses while hovered, while keyboard focus is inside it
+      // (mouse clicks don't count), and while the tab is hidden. The pause/play button (WCAG 2.2.2) is the explicit
+      // override, and prefers-reduced-motion starts paused.
+      (function () {
+        var root = document.querySelector("[data-slideshow]");
+        if (!root) return;
+        var INTERVAL_MS = 5000;
+        var slides = Array.prototype.slice.call(
+          root.querySelectorAll(".slide"),
+        );
+        var dots = Array.prototype.slice.call(
+          root.querySelectorAll("[data-slide-to]"),
+        );
+        var caption = root.querySelector("[data-slide-caption]");
+        var toggle = root.querySelector("[data-slide-toggle]");
+        var controls = root.querySelector("[data-slide-controls]");
+        if (slides.length < 2 || !caption || !toggle || !controls) return;
+
+        var index = 0;
+        var timer = null;
+        var hovered = false;
+        var keyboardFocus = false;
+        var userPaused = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        function show(next) {
+          index = (next + slides.length) % slides.length;
+          slides.forEach(function (slide, i) {
+            slide.classList.toggle("is-active", i === index);
+            slide.setAttribute("aria-hidden", String(i !== index));
+          });
+          dots.forEach(function (dot, i) {
+            dot.setAttribute("aria-current", String(i === index));
+          });
+          caption.textContent = slides[index].getAttribute("data-caption");
+        }
+
+        function stop() {
+          clearInterval(timer);
+          timer = null;
+        }
+
+        function sync() {
+          var canRun =
+            !userPaused && !hovered && !keyboardFocus && !document.hidden;
+          if (canRun && !timer) {
+            timer = setInterval(function () {
+              show(index + 1);
+            }, INTERVAL_MS);
+          } else if (!canRun) {
+            stop();
+          }
+        }
+
+        function renderToggle() {
+          toggle.setAttribute(
+            "aria-label",
+            userPaused ? "Play slideshow" : "Pause slideshow",
+          );
+          toggle
+            .querySelector('[data-icon="pause"]')
+            .toggleAttribute("hidden", userPaused);
+          toggle
+            .querySelector('[data-icon="play"]')
+            .toggleAttribute("hidden", !userPaused);
+          caption.setAttribute("aria-live", userPaused ? "polite" : "off");
+        }
+
+        dots.forEach(function (dot) {
+          dot.addEventListener("click", function () {
+            stop(); // restart the interval so the chosen photo gets a full turn
+            show(Number(dot.getAttribute("data-slide-to")));
+            sync();
+          });
+        });
+        toggle.addEventListener("click", function () {
+          userPaused = !userPaused;
+          keyboardFocus = false; // an explicit play/pause overrides the focus pause
+          renderToggle();
+          sync();
+        });
+        root.addEventListener("mouseenter", function () {
+          hovered = true;
+          sync();
+        });
+        root.addEventListener("mouseleave", function () {
+          hovered = false;
+          sync();
+        });
+        root.addEventListener("focusin", function (event) {
+          try {
+            keyboardFocus = event.target.matches(":focus-visible");
+          } catch (unsupported) {
+            keyboardFocus = false; // browser lacks :focus-visible; keep autoplay, the pause button still works
+          }
+          sync();
+        });
+        root.addEventListener("focusout", function (event) {
+          if (root.contains(event.relatedTarget)) return; // moving between the slideshow's own buttons
+          keyboardFocus = false;
+          sync();
+        });
+        document.addEventListener("visibilitychange", sync);
+
+        controls.removeAttribute("hidden");
+        show(0);
+        renderToggle();
+        sync();
+      })();
     </script>
   </body>
 </html>
