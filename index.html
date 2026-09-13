@@ -194,7 +194,7 @@
 
       .slide {
         opacity: 0;
-        transition: opacity 700ms var(--ease-out);
+        transition: opacity 500ms var(--ease-out);
       }
       .slide.is-active {
         opacity: 1;
@@ -593,17 +593,29 @@
             </article>
 
             <article class="card overflow-hidden">
-              <div
-                class="aspect-[4/5] bg-ink/[0.04] grid place-items-center text-[14px] text-ink-mute"
-              >
-                Photo coming soon
-              </div>
+              <img
+                src="brand_assets/board/oliver.jpg"
+                alt="Portrait of Oliver, Co-Founder, Co-President, and Event Organizer of Rebels Fight Cancer"
+                width="800"
+                height="800"
+                loading="lazy"
+                class="media block w-full aspect-[4/5] object-cover"
+              />
               <div class="p-6">
                 <h3 class="text-[20px] font-bold tracking-[-0.01em]">
                   Co-Founder, Co-President &amp; Event Organizer
                 </h3>
-                <p class="mt-1 text-[14px] font-medium text-ink-mute">
-                  Name coming soon
+                <p class="mt-1 text-[14px] font-medium text-ink-mute">Oliver</p>
+                <p class="mt-3 text-[15px] leading-[1.65] text-ink-soft">
+                  Oliver is a senior at Great Neck South High School. He
+                  co-founded Rebels Fight Cancer to combine his experience in
+                  leadership and service with a cause that could mobilize his
+                  school community. As event organizer, he coordinates
+                  fundraisers, card drives, and awareness events that support
+                  pediatric cancer research. Outside the organization, Oliver
+                  serves as president of Great Neck South DECA, teaches piano,
+                  and volunteers with Tzu Chi USA as a team leader and English
+                  tutor.
                 </p>
               </div>
             </article>
@@ -1399,13 +1411,13 @@
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
     <script>
-      // Hero slideshow: crossfades event photos every 5s. Pauses while hovered, while keyboard focus is inside it
+      // Hero slideshow: crossfades event photos every 3s. Pauses while hovered, while keyboard focus is inside it
       // (mouse clicks don't count), and while the tab is hidden. The pause/play button (WCAG 2.2.2) is the explicit
       // override, and prefers-reduced-motion starts paused.
       (function () {
         var root = document.querySelector("[data-slideshow]");
         if (!root) return;
-        var INTERVAL_MS = 5000;
+        var INTERVAL_MS = 3000;
         var slides = Array.prototype.slice.call(
           root.querySelectorAll(".slide"),
         );
