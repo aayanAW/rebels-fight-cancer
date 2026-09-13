@@ -17,6 +17,11 @@
       href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Rise-in animations hide content until it scrolls into view, so only opt in when the browser can reveal it.
+      if ("IntersectionObserver" in window)
+        document.documentElement.classList.add("js-reveal");
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -47,6 +52,15 @@
     <style>
       :root {
         --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        /* Overshooting ease for the hover pop, carried over from the original site. */
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        /* Faint ribbon-yellow glow under a raised card or button. */
+        --glow:
+          0 10px 30px -12px rgba(62, 42, 2, 0.2),
+          0 30px 70px -30px rgba(217, 152, 6, 0.4);
+        --glow-button:
+          0 8px 20px -8px rgba(138, 92, 5, 0.35),
+          0 18px 40px -16px rgba(217, 152, 6, 0.6);
       }
       html {
         scroll-behavior: smooth;
@@ -73,13 +87,11 @@
         box-shadow: inset 0 0 0 1px rgba(26, 23, 20, 0.08);
         transition:
           background-color 150ms var(--ease-out),
-          transform 120ms var(--ease-out);
+          box-shadow 260ms var(--ease-out),
+          transform 260ms var(--ease-spring);
       }
       .btn-primary:hover {
         background: #f2bd00;
-      }
-      .btn-primary:active {
-        transform: scale(0.97);
       }
       .btn-primary:focus-visible {
         outline: 2px solid #1a1714;
@@ -91,13 +103,11 @@
         color: #ffffff;
         transition:
           background-color 150ms var(--ease-out),
-          transform 120ms var(--ease-out);
+          box-shadow 260ms var(--ease-out),
+          transform 260ms var(--ease-spring);
       }
       .btn-dark:hover {
         background: #3d3934;
-      }
-      .btn-dark:active {
-        transform: scale(0.97);
       }
       .btn-dark:focus-visible {
         outline: 2px solid #1a1714;
@@ -108,14 +118,12 @@
         transition:
           background-color 150ms var(--ease-out),
           border-color 150ms var(--ease-out),
-          transform 120ms var(--ease-out);
+          box-shadow 260ms var(--ease-out),
+          transform 260ms var(--ease-spring);
       }
       .btn-ghost:hover {
         background: rgba(26, 23, 20, 0.05);
         border-color: #1a1714;
-      }
-      .btn-ghost:active {
-        transform: scale(0.97);
       }
       .btn-ghost:focus-visible {
         outline: 2px solid #1a1714;
@@ -136,7 +144,7 @@
         background: #ffcc00;
         transform: scaleX(0);
         transform-origin: left;
-        transition: transform 200ms var(--ease-out);
+        transition: transform 320ms var(--ease-spring);
       }
       .nav-link:hover {
         color: #1a1714;
@@ -154,7 +162,10 @@
         background: #ffffff;
         border: 1px solid #e4e1db;
         border-radius: 12px;
-        transition: border-color 150ms var(--ease-out);
+        transition:
+          border-color 220ms var(--ease-out),
+          box-shadow 340ms var(--ease-out),
+          transform 340ms var(--ease-spring);
       }
       .card-link {
         display: block;
@@ -162,12 +173,20 @@
         text-decoration: none;
         border-radius: 12px;
       }
-      .card-link:hover .card {
-        border-color: #9c978f;
-      }
       .card-link:focus-visible {
         outline: 2px solid #1a1714;
         outline-offset: 3px;
+      }
+      /* A card link's focus ring follows the raised card instead of staying on the link box. Browsers without
+         :has() keep the ring on the link, so there's never a double ring. */
+      @supports selector(:has(*)) {
+        .card-link:focus-visible:has(> .card) {
+          outline: none;
+        }
+        .card-link:focus-visible > .card {
+          outline: 2px solid #1a1714;
+          outline-offset: 3px;
+        }
       }
       .card-link:hover .card-title {
         text-decoration: underline;
@@ -175,7 +194,7 @@
         text-underline-offset: 4px;
       }
       .card-arrow {
-        transition: transform 150ms var(--ease-out);
+        transition: transform 260ms var(--ease-spring);
       }
       .card-link:hover .card-arrow {
         transform: translateX(3px);
@@ -185,6 +204,61 @@
       }
       .card-link:hover .card-img {
         transform: scale(1.02);
+      }
+      .lift-frame {
+        transition:
+          box-shadow 340ms var(--ease-out),
+          transform 340ms var(--ease-spring);
+      }
+
+      /* Hover pop: cards and buttons lift with a faint yellow glow, like the original site. Only for pointers that
+         can hover, so a tap on a phone doesn't leave a card stuck in the raised state. Keyboard focus gets the same
+         pop. */
+      @media (hover: hover) {
+        .card:hover,
+        .card-link:hover .card,
+        .card-link:hover .lift-frame {
+          transform: translateY(-4px);
+          box-shadow: var(--glow);
+        }
+        .card:hover,
+        .card-link:hover .card {
+          border-color: rgba(217, 152, 6, 0.28);
+        }
+        .btn-primary:hover,
+        .card-link:hover .btn-primary {
+          transform: translateY(-2px);
+          box-shadow:
+            inset 0 0 0 1px rgba(26, 23, 20, 0.08),
+            var(--glow-button);
+        }
+        .btn-ghost:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 28px -14px rgba(217, 152, 6, 0.55);
+        }
+        .btn-dark:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 26px -12px rgba(26, 23, 20, 0.5);
+        }
+      }
+      .card-link:focus-visible .card,
+      .card-link:focus-visible .lift-frame {
+        transform: translateY(-4px);
+        box-shadow: var(--glow);
+      }
+      .card-link:focus-visible .card {
+        border-color: rgba(217, 152, 6, 0.28);
+      }
+      .card-link:focus-visible .btn-primary {
+        transform: translateY(-2px);
+        box-shadow:
+          inset 0 0 0 1px rgba(26, 23, 20, 0.08),
+          var(--glow-button);
+      }
+      .btn-primary:active,
+      .btn-dark:active,
+      .btn-ghost:active {
+        transform: translateY(0) scale(0.97);
       }
 
       .media {
@@ -231,6 +305,39 @@
       .slide-dot[aria-current="true"]::before {
         background: #1a1714;
         transform: scale(1.35);
+      }
+
+      /* Rise-in: [data-reveal] blocks fade up the first time they scroll into view (script at the end of the page).
+         Content is only hidden on screen, when that script can run (html.js-reveal) and the visitor hasn't asked
+         for reduced motion; printing shows everything. It animates `translate`, not `transform`, so it never
+         fights the hover pop. */
+      @keyframes rise-in {
+        from {
+          opacity: 0;
+          translate: 0 24px;
+        }
+        to {
+          opacity: 1;
+          translate: 0 0;
+        }
+      }
+      @media screen and (prefers-reduced-motion: no-preference) {
+        .js-reveal [data-reveal]:not(.is-revealed) {
+          opacity: 0;
+        }
+        .js-reveal [data-reveal].is-revealed:not(.reveal-done) {
+          animation: rise-in 700ms var(--ease-out) both;
+        }
+        /* The hero is already in view on load, so it rises in with CSS alone and never waits on the script. */
+        .hero-rise {
+          animation: rise-in 700ms var(--ease-out) backwards;
+        }
+        .hero-rise-2 {
+          animation-delay: 90ms;
+        }
+        .hero-rise-3 {
+          animation-delay: 180ms;
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -341,18 +448,22 @@
         >
           <div class="lg:col-span-6">
             <h1
-              class="text-[40px] sm:text-[52px] lg:text-[56px] xl:text-[64px] leading-[1.02] font-extrabold tracking-[-0.025em]"
+              class="hero-rise text-[40px] sm:text-[52px] lg:text-[56px] xl:text-[64px] leading-[1.02] font-extrabold tracking-[-0.025em]"
             >
               Students raising money for pediatric cancer research.
             </h1>
-            <p class="mt-6 max-w-xl text-[18px] leading-[1.65] text-ink-soft">
+            <p
+              class="hero-rise hero-rise-2 mt-6 max-w-xl text-[18px] leading-[1.65] text-ink-soft"
+            >
               Rebels Fight Cancer is a student-led
               <span class="whitespace-nowrap">501(c)(3)</span> founded at Great
               Neck South High School. We run fundraisers, card drives, and
               speaker events, and the money we raise goes to the National
               Pediatric Cancer Foundation.
             </p>
-            <div class="mt-8 flex flex-wrap items-center gap-3">
+            <div
+              class="hero-rise hero-rise-3 mt-8 flex flex-wrap items-center gap-3"
+            >
               <a
                 href="https://give.nationalpcf.org/team/774854"
                 target="_blank"
@@ -499,11 +610,13 @@
           class="mx-auto max-w-7xl px-6 lg:px-10 grid lg:grid-cols-12 gap-8 lg:gap-14"
         >
           <h2
+            data-reveal
             class="lg:col-span-4 text-[32px] lg:text-[40px] leading-[1.1] font-bold tracking-[-0.02em]"
           >
             Our mission
           </h2>
           <div
+            data-reveal
             class="lg:col-span-8 max-w-[68ch] text-[17px] leading-[1.75] text-ink-soft space-y-5"
           >
             <p>
@@ -529,13 +642,13 @@
           <dl
             class="lg:col-start-5 lg:col-span-8 grid sm:grid-cols-3 gap-6 sm:gap-8 border-t border-paper-line pt-8"
           >
-            <div>
+            <div data-reveal>
               <dt class="text-[15px] font-semibold text-ink">Fundraisers</dt>
               <dd class="mt-1.5 text-[15px] leading-[1.6] text-ink-soft">
                 Chipotle nights, popcorn sales, candygrams, and community walks.
               </dd>
             </div>
-            <div>
+            <div data-reveal>
               <dt class="text-[15px] font-semibold text-ink">
                 Where donations go
               </dt>
@@ -543,7 +656,7 @@
                 Everything goes through our NPCF team page. We don't take a cut.
               </dd>
             </div>
-            <div>
+            <div data-reveal>
               <dt class="text-[15px] font-semibold text-ink">
                 Beyond fundraising
               </dt>
@@ -560,13 +673,14 @@
       <section id="board" class="py-20 lg:py-28 bg-paper-tint">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
           <h2
+            data-reveal
             class="text-[32px] lg:text-[40px] leading-[1.1] font-bold tracking-[-0.02em]"
           >
             About the board
           </h2>
 
           <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <article class="card overflow-hidden">
+            <article data-reveal class="card overflow-hidden">
               <img
                 src="brand_assets/board/aayan.jpeg"
                 alt="Portrait of Aayan Alwani, Co-Founder, Co-President, and Outreach Lead of Rebels Fight Cancer"
@@ -592,7 +706,7 @@
               </div>
             </article>
 
-            <article class="card overflow-hidden">
+            <article data-reveal class="card overflow-hidden">
               <img
                 src="brand_assets/board/oliver.jpg"
                 alt="Portrait of Oliver, Co-Founder, Co-President, and Event Organizer of Rebels Fight Cancer"
@@ -620,7 +734,7 @@
               </div>
             </article>
 
-            <article class="card overflow-hidden">
+            <article data-reveal class="card overflow-hidden">
               <img
                 src="brand_assets/board/olivia.jpg"
                 alt="Portrait of Olivia, Co-Founder, Co-President, and Social Media Operations lead of Rebels Fight Cancer"
@@ -656,6 +770,7 @@
       <section id="events" class="py-20 lg:py-28">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
           <div
+            data-reveal
             class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
           >
             <h2
@@ -670,7 +785,11 @@
           </div>
 
           <!-- Featured -->
-          <a href="events/walk-to-give-summer-back.html" class="card-link mb-6">
+          <a
+            href="events/walk-to-give-summer-back.html"
+            data-reveal
+            class="card-link mb-6"
+          >
             <article class="card overflow-hidden grid lg:grid-cols-2">
               <div
                 class="relative aspect-[4/3] lg:aspect-auto lg:min-h-[360px] overflow-hidden"
@@ -719,7 +838,11 @@
 
           <!-- Grid of events -->
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <a href="events/chipotle-fundraiser.html" class="card-link">
+            <a
+              href="events/chipotle-fundraiser.html"
+              class="card-link"
+              data-reveal
+            >
               <article class="card overflow-hidden flex flex-col h-full">
                 <div class="aspect-[3/2] overflow-hidden">
                   <img
@@ -761,7 +884,11 @@
               </article>
             </a>
 
-            <a href="events/cards-for-hospitalized-kids.html" class="card-link">
+            <a
+              href="events/cards-for-hospitalized-kids.html"
+              class="card-link"
+              data-reveal
+            >
               <article class="card overflow-hidden flex flex-col h-full">
                 <div class="aspect-[3/2] overflow-hidden">
                   <img
@@ -803,7 +930,11 @@
               </article>
             </a>
 
-            <a href="events/popcorn-fundraiser.html" class="card-link">
+            <a
+              href="events/popcorn-fundraiser.html"
+              class="card-link"
+              data-reveal
+            >
               <article class="card overflow-hidden flex flex-col h-full">
                 <div class="aspect-[3/2] overflow-hidden">
                   <img
@@ -845,7 +976,7 @@
               </article>
             </a>
 
-            <a href="events/sunrise-speaker.html" class="card-link">
+            <a href="events/sunrise-speaker.html" class="card-link" data-reveal>
               <article class="card overflow-hidden flex flex-col h-full">
                 <div class="aspect-[3/2] overflow-hidden">
                   <img
@@ -887,7 +1018,7 @@
               </article>
             </a>
 
-            <a href="events/candygram-sale.html" class="card-link">
+            <a href="events/candygram-sale.html" class="card-link" data-reveal>
               <article class="card overflow-hidden flex flex-col h-full">
                 <div class="aspect-[3/2] overflow-hidden">
                   <img
@@ -929,7 +1060,11 @@
               </article>
             </a>
 
-            <a href="events/candy-cane-fundraiser.html" class="card-link">
+            <a
+              href="events/candy-cane-fundraiser.html"
+              class="card-link"
+              data-reveal
+            >
               <article class="card overflow-hidden flex flex-col h-full">
                 <div class="aspect-[3/2] overflow-hidden">
                   <img
@@ -978,6 +1113,7 @@
       <section id="blog" class="py-20 lg:py-28 bg-paper-tint">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
           <div
+            data-reveal
             class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12"
           >
             <h2
@@ -994,6 +1130,7 @@
           <!-- Featured post, laid out like the hero -->
           <a
             href="blog/what-500-cards-actually-do.html"
+            data-reveal
             class="card-link grid lg:grid-cols-12 gap-8 lg:gap-14 items-center"
           >
             <div class="lg:col-span-6">
@@ -1015,7 +1152,7 @@
                 >Read post</span
               >
             </div>
-            <div class="lg:col-span-6 overflow-hidden rounded-xl">
+            <div class="lift-frame lg:col-span-6 overflow-hidden rounded-xl">
               <img
                 src="brand_assets/instagram/cardmaking-dec2.jpg"
                 alt=""
@@ -1031,6 +1168,7 @@
             <a
               href="blog/why-pediatric-cancer-research-is-underfunded.html"
               class="card-link"
+              data-reveal
             >
               <article class="card h-full p-7 lg:p-8 flex flex-col">
                 <p class="text-[14px] font-semibold text-ink-mute">
@@ -1061,7 +1199,11 @@
                 ></span>
               </article>
             </a>
-            <a href="blog/how-an-npcf-dollar-travels.html" class="card-link">
+            <a
+              href="blog/how-an-npcf-dollar-travels.html"
+              class="card-link"
+              data-reveal
+            >
               <article class="card h-full p-7 lg:p-8 flex flex-col">
                 <p class="text-[14px] font-semibold text-ink-mute">
                   Explainer · 5 min read
@@ -1090,7 +1232,11 @@
                 ></span>
               </article>
             </a>
-            <a href="blog/pediatric-cancer-is-not-rare.html" class="card-link">
+            <a
+              href="blog/pediatric-cancer-is-not-rare.html"
+              class="card-link"
+              data-reveal
+            >
               <article class="card h-full p-7 lg:p-8 flex flex-col">
                 <p class="text-[14px] font-semibold text-ink-mute">
                   Explainer · 4 min read
@@ -1122,6 +1268,7 @@
             <a
               href="blog/how-to-start-a-chapter-at-your-school.html"
               class="card-link"
+              data-reveal
             >
               <article class="card h-full p-7 lg:p-8 flex flex-col">
                 <p class="text-[14px] font-semibold text-ink-mute">
@@ -1160,6 +1307,7 @@
       <section id="join" class="py-20 lg:py-28">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
           <div
+            data-reveal
             class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
           >
             <h2
@@ -1174,7 +1322,7 @@
           </div>
 
           <div class="grid md:grid-cols-2 gap-6">
-            <article class="card p-8 lg:p-10 flex flex-col">
+            <article data-reveal class="card p-8 lg:p-10 flex flex-col">
               <h3
                 class="text-[24px] lg:text-[28px] leading-[1.15] font-bold tracking-[-0.02em]"
               >
@@ -1213,7 +1361,7 @@
               </a>
             </article>
 
-            <article class="card p-8 lg:p-10 flex flex-col">
+            <article data-reveal class="card p-8 lg:p-10 flex flex-col">
               <h3
                 class="text-[24px] lg:text-[28px] leading-[1.15] font-bold tracking-[-0.02em]"
               >
@@ -1243,7 +1391,7 @@
         <div
           class="mx-auto max-w-7xl px-6 lg:px-10 py-16 lg:py-20 grid lg:grid-cols-12 gap-8 lg:items-end"
         >
-          <div class="lg:col-span-7">
+          <div data-reveal class="lg:col-span-7">
             <h2
               class="text-[32px] lg:text-[44px] leading-[1.05] font-extrabold tracking-[-0.025em]"
             >
@@ -1254,7 +1402,10 @@
               tell a friend about us.
             </p>
           </div>
-          <div class="lg:col-span-5 flex flex-wrap lg:justify-end gap-3">
+          <div
+            data-reveal
+            class="lg:col-span-5 flex flex-wrap lg:justify-end gap-3"
+          >
             <a
               href="https://give.nationalpcf.org/team/774854"
               target="_blank"
@@ -1520,6 +1671,44 @@
         show(0);
         renderToggle();
         sync();
+      })();
+    </script>
+    <script>
+      // Rise-in: each [data-reveal] block fades up the first time it enters the viewport. Blocks that enter together
+      // are staggered. When a block finishes, its animation is removed so no leftover translate turns cards into
+      // separate stacking layers (that would let the next card cover a hovered card's glow).
+      (function () {
+        var root = document.documentElement;
+        if (!root.classList.contains("js-reveal")) return;
+        var STAGGER_MS = 90;
+        var MAX_STEPS = 4;
+        try {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              var step = 0;
+              entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                var el = entry.target;
+                observer.unobserve(el);
+                el.style.animationDelay =
+                  Math.min(step++, MAX_STEPS) * STAGGER_MS + "ms";
+                el.addEventListener("animationend", function done(event) {
+                  if (event.target !== el) return;
+                  el.removeEventListener("animationend", done);
+                  el.classList.add("reveal-done");
+                  el.style.animationDelay = "";
+                });
+                el.classList.add("is-revealed");
+              });
+            },
+            { rootMargin: "0px 0px -8% 0px" },
+          );
+          document.querySelectorAll("[data-reveal]").forEach(function (el) {
+            observer.observe(el);
+          });
+        } catch (error) {
+          root.classList.remove("js-reveal"); // never leave content hidden if the reveal can't run
+        }
       })();
     </script>
   </body>
